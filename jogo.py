@@ -5,6 +5,28 @@ from random import randint, choice
 # Inicializa o pygame
 pygame.init()
 
+def adicionar_objeto():
+    posicao = (randint(10, 950), randint(-100, 0))    
+    velocidade = randint(5, 10)
+
+    objeto_rect = projetil_superficies[0].get_rect(center=posicao)
+
+
+    projetil_superficies.append({
+        'retangulo': objeto_rect,
+        'velocidade': velocidade
+    })
+
+def movimento_projetil():
+    global projetil_superficies
+    for objeto in projetil_superficies:
+        objeto['retangulo'].x += objeto['velocidade']
+
+    
+    tela.blit(projetil_superficies[projetil_index], objeto['retangulo'])
+
+
+
 # Cria a tela
 tamanho = (960, 540)
 tela = pygame.display.set_mode(tamanho)
@@ -25,6 +47,8 @@ jogador_parado = []
 zumbi_index = 0
 zumbi_andando = []
 
+movimento_projetil =[]
+
 # Carrega o jogador parado
 img = pygame.image.load('assets/jogador_atirando.png').convert_alpha()
 jogador_parado.append(img)
@@ -40,7 +64,9 @@ projetil_retangulo = projetil_superficies[projetil_index].get_rect(center = (550
 
 # Controla se o personagem está andando (negativo esquerda, positivo direita)
 direcao_personagem = 1
-movimento_projetil = 0
+
+novo_objeto_timer = pygame.USEREVENT + 1
+pygame.time.set_timer(novo_objeto_timer, 500)
 
 #LOOP DO JOGO
 while True:
@@ -57,11 +83,14 @@ while True:
             if evento.key == pygame.K_LEFT:
                 direcao_personagem = -1
 
+        if evento.type == novo_objeto_timer:
+            adicionar_objeto()
 
-        if direcao_personagem == 1:
-            jogador = pygame.transform.flip(jogador_parado[int(jogador_index)], True, False)
-        else:
-            jogador = jogador_parado[int(jogador_index)]
+    if direcao_personagem == 1:
+        jogador = pygame.transform.flip(jogador_parado[int(jogador_index)], True, False)
+    else:
+        jogador = jogador_parado[int(jogador_index)]
+
         
 
     # Desenha o fundo na tela
@@ -76,4 +105,3 @@ while True:
 
     # Define a quantidade de frames por segundo
     relogio.tick(60)
-    
