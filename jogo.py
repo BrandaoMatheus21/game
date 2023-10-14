@@ -76,3 +76,4 @@ while True:
 
     # Define a quantidade de frames por segundo
     relogio.tick(60)
+    
